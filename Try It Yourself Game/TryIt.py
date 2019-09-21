@@ -9,6 +9,7 @@ from time import sleep
 from game_stats import GameStats
 from button import Button
 from scoreboard import Scoreboard
+from music import Music
 
 
 class TryIt:
@@ -31,6 +32,8 @@ class TryIt:
 
         self.timer = self.settings.timer
 
+        self.music = Music()
+
     def run_game(self):
         """Main method of the game"""
         while True:
@@ -43,7 +46,7 @@ class TryIt:
             self._update_screen()
 
     def _check_events(self):
-        """Checks keypresses and mouse events"""
+        """Checks key presses and mouse events"""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
@@ -77,7 +80,7 @@ class TryIt:
             pygame.mouse.set_visible(False)
 
     def _check_keydown_events(self, event):
-        """Check for keypresses"""
+        """Check for key presses"""
         if event.key == pygame.K_RIGHT:
             self.shadow.moving_right = True
         elif event.key == pygame.K_LEFT:
@@ -97,23 +100,22 @@ class TryIt:
     def _create_boo(self):
         """Method to randomly generate Boos"""
         boo = Boo(self)
+
         if len(self.boos) == 0:
             initial_start = True
         else:
             initial_start = False
+
         boo.x = float(randint(0, self.settings.screen_width))
         boo.rect.x = boo.x
         boo.y = float(randint(0, self.settings.screen_mid_y))
         boo.rect.y = boo.y
+
         if not initial_start:
             if len(self.boos) < self.settings.num_boos:
-                    for boos in self.boos.sprites():
-                        if not boo.rect.colliderect(boos):
-                            self.boos.add(boo)
-                            # print("In not collision")
-                        else:
-                            continue
-                            # print("in collision")
+                    if not pygame.sprite.spritecollideany(boo, self.boos):
+                        self.boos.add(boo)
+
         else:
             self.boos.add(boo)
 
@@ -122,19 +124,20 @@ class TryIt:
         for boos in self.boos.sprites():
             boos.y += self.settings.boo_drop_speed
             boos.rect.y = boos.y
-            self._check_collision(boos)
+            self._check_collision()
             self._check_boo_hit_ground(boos)
             self._boo_counter()
 
     def _boo_counter(self):
-        """Timer for everytime a period of time passes, boo speed gets quicker"""
+        """Timer for every time a period of time passes, boo speed gets quicker"""
         if self.timer < 0:
             self.settings.increase_speed()
-            self.timer = 100000
+            self.timer = 10000
             # Add in next level...
             self.stats.level += 1
             self.sb.prep_level()
             self.sb.check_high_score()
+
         self.timer -= 1
 
     def _check_boo_hit_ground(self, boo):
@@ -143,9 +146,9 @@ class TryIt:
         if boo.rect.top >= screen_rect.bottom:
             self.boos.remove(boo)
 
-    def _check_collision(self, boo):
+    def _check_collision(self):
         """Checks to see if boo collided with player"""
-        if self.shadow.rect.colliderect(boo):
+        if pygame.sprite.spritecollideany(self.shadow, self.boos):
             self._shadow_hit()
 
     def _shadow_hit(self):

@@ -1,6 +1,7 @@
 import pygame
 from pygame.sprite import Sprite
 
+
 class Shadow(Sprite):
     """Class that represents the Shadow object"""
 
@@ -12,7 +13,7 @@ class Shadow(Sprite):
         self.screen = ti_game.screen
         self.screen_rect = self.screen.get_rect()
 
-        self.image = pygame.image.load('images/Mom.bmp')
+        self.image = pygame.image.load('images/Mom2.bmp')
         self.rect = self.image.get_rect()
 
         self.rect.midbottom = self.screen_rect.midbottom
@@ -49,11 +50,15 @@ class Shadow(Sprite):
             self.jump_count = 100
             self.jump = False
             self.rect.midbottom = self.screen_rect.midbottom
+            self.y = float(self.rect.y)
 
     def center_shadow(self):
+        """Centers shadow to the middle of the screen on restart."""
+        self.jump = False
         self.rect.midbottom = self.screen_rect.midbottom
         self.x = float(self.rect.x)
-        self.rect.y = float(self.screen_rect.midbottom[1])
+        self.y = float(self.rect.y)
 
     def blitme(self):
+        """Redraws Shadow to the screen, constantly updating his image."""
         self.screen.blit(self.image, self.rect)

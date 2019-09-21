@@ -4,7 +4,7 @@ from shadow import Shadow
 
 
 class Scoreboard:
-    """A class that manages the scoreboad"""
+    """A class that manages the scoreboard"""
 
     def __init__(self, ti_game):
         """Initializes the scoreboard class."""
@@ -59,4 +59,5 @@ class Scoreboard:
         """Checks to see if there is a new high score."""
         if self.stats.level > self.stats.high_score:
             self.stats.high_score = self.stats.level
+            self.stats.write_high_score()
             self.prep_high_score()

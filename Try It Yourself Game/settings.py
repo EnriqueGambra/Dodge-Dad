@@ -27,7 +27,7 @@ class Settings:
         self.initialize_dynamic_settings()
 
         # Timer settings
-        self.timer = 100000
+        self.timer = 10000
 
     def initialize_dynamic_settings(self):
         """Initialize dynamic settings."""
